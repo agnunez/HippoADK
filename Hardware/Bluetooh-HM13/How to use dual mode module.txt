@@ -1,0 +1,30 @@
+1. Default baud rate is 115200, N, 8, 1.
+
+2. module contains tow MAC address, 00:0E:0B:xx:xx:xx is BLE mode, 00:0E:0E:xx:xx:xx is EDR mode.
+
+3. Our company provides two version bluetooth serial assistant, BLE Comassistant and SPP ComAssistant.
+
+4. Dont iperate the BLE in android Bluetooth management interface.
+
+5. Before V216 PIO0 must be pull up.
+
+6. Since V216 you can shut down PIO0 function use "AT+PIO0" command. After execute "AT+PIO00" command, you can left PIO0 NC.
+
+7. Since V216 we setup "AT+PIO00" as default settings.
+
+8. Query version command is "AT+VERS?"
+
+9. The AT command is uppercase characters, dont have any other symbols.
+
+A. Dual mode module dont have high speed, Please make some delay time between two packages.
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+How to get high speed
+
+1. Please use BLE mode with iOS and use SPP mode with other device.
+2. Please use high baudrate if possible. such like 230400, 460800, 921600
+3. Please open high speed mode, "AT+HIGH1"
+4. Please send 127 Bytes per packet through module UART. 
+   e.g. if you want send 1270 bytes per seconds, then you send 127 bytes per packet and interval 100ms between two packets.
+
+
