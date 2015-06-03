@@ -13,8 +13,9 @@ int MotorBPWM = 4;
 int encoderMotorRight  = 0; // Encoder position
 int MotorRightPWM  = 0; 
 int EndStop=1000;
-int offset = 0;
-int amp = 50;
+int offset = 2; // Maximum error position
+int P = 5;   // Proportional from PID 
+int error = 10;
 
 void setup(){
   pinMode(RED,OUTPUT);
@@ -25,50 +26,55 @@ void setup(){
   pinMode(MotorB1, OUTPUT);  // Socket B, Motor +  Pin C0  
   pinMode(MotorB2, OUTPUT);  // Socket B, Motor -  Pin C1
   pinMode(MotorBPWM, OUTPUT);   // Socket B, PWM speed  Pin C8
+  Serial1.begin(115200);
 }
   /* Calculate Proportional Position error with 255 max speed */
 
 void loop(){   // Demo loop
   offset=0;
   movemotor();
-  delay(10000);
-  offset=100;
+  delay(5000);
+  offset=10000;
   movemotor();
-  delay(10000);
-  offset=-100;
+  delay(1000);
+  offset=-10000;
   movemotor();
-  delay(10000);
-  offset=200;
+  delay(1000);
+  offset=20000;
   movemotor();
-  delay(10000);
+  delay(1000);
 }
 
 int PositionError(){
-  int PE = amp*abs(encoderMotorRight-offset);
-  if (PE > 255) PE = 255;
+  int PE = P*abs(encoderMotorRight-offset);
+  if (PE > 255) PE = 255;  // Max PWM
+  if (PE < 100) PE = 200;  // Min PWM
   if ((encoderMotorRight-offset)<0) PE=-PE;
   return PE; 
 }
 
 void movemotor(){
-  MotorRightPWM=PositionError();
-  byte pin, analogPin;
-  /* Left Motor / Socket A */
-  if(MotorRightPWM<0){ // Correct position moving CW
-    digitalWrite(MotorB1, HIGH );   
-    digitalWrite(MotorB2, LOW);     
-    analogWrite(MotorBPWM,abs(MotorRightPWM)); 			    
-   }else if(MotorRightPWM>0){              // Correct position moving CCW
-     digitalWrite(MotorB1, LOW );
-     digitalWrite(MotorB2, HIGH);
-     analogWrite(MotorBPWM,abs(MotorRightPWM));	
-   }
-     if(MotorRightPWM==0){              // Arrived to destination
-     digitalWrite(MotorB1, LOW );
-     digitalWrite(MotorB2, LOW);
-     analogWrite(MotorBPWM,0);	
-     return;
-   }     		
+  Serial1.println("Start move from:");
+  Serial1.print(encoderMotorRight);
+  Serial1.println("\n\r");
+  while(abs(encoderMotorRight-offset)>error){
+    MotorRightPWM=PositionError();
+    byte pin, analogPin;
+    /* Left Motor / Socket A */
+    if(MotorRightPWM<0){ // Correct position moving CW
+      digitalWrite(MotorB1, HIGH );   
+      digitalWrite(MotorB2, LOW);     
+      analogWrite(MotorBPWM,abs(MotorRightPWM)); 			    
+    }else if(MotorRightPWM>0){              // Correct position moving CCW
+      digitalWrite(MotorB1, LOW );
+      digitalWrite(MotorB2, HIGH);
+      analogWrite(MotorBPWM,abs(MotorRightPWM));	
+    }
+  }
+  // Stop motor
+  digitalWrite(MotorB1, LOW );
+  digitalWrite(MotorB2, LOW);
+  analogWrite(MotorBPWM,0);	
 }
 void testEndStop(){
    if(encoderMotorRight>EndStop){
