@@ -380,6 +380,8 @@ void MotorCallback(byte dir, int value)  // F3: Motor C
 
 void setup()
 {
+  Serial1.begin(115200);
+  Serial1.println("Debug init");
   uint8_t msg[5];
   uint8_t msg1[5]={0xD1,0x07,0x01,0x00,0x00};  // digitalRead   A B C D
   uint8_t msg3[5]={0}; 
@@ -499,6 +501,10 @@ void setup()
       //USBH_ADK_write(&USB_OTG_Core_dev, msg5, sizeof(msg5));
       initTEST = 0;
       //} 
+      if(msg[0]!=0x00){    
+        Serial1.print("msg: ");
+        Serial1.println(msg[0],HEX);
+      }
       if(msg[0]==0xF0)           // Motor C
     {     
         pinMode(30,OUTPUT);    
