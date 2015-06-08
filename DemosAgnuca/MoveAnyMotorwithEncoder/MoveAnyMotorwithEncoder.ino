@@ -5,12 +5,26 @@
 in Socket B of HippoADK with HippoLego. 
 June 2015. Agustin Nunez. https://github/agnunez/HippoADK */
 
-int pinEncA = 11;  // Socket B
-int pinEncB = 12;  // Socket B
+// Socket A
+int pinEncA = 38;  
+int pinEncB = 33; // - malfunction. bridge 39 into 33;  
+int pinMotorPwr1 = 17;
+int pinMotorPwr2 = 18;
+int pinMotorPWM = 5;
+/*
+// Socket B
+int pinEncA = 11;  
+int pinEncB = 12;  
 int pinMotorPwr1 = 15;
 int pinMotorPwr2 = 16;
 int pinMotorPWM = 4;
-
+// Socket C
+int pinEncA = 8;  
+int pinEncB = 9;  
+int pinMotorPwr1 = 30;
+int pinMotorPwr2 = 31;
+int pinMotorPWM = 3;
+*/
 int encoderPos  = 0; // Encoder position
 int MotorPWM  = 0; 
 int offset = 2;    // Maximum error position
